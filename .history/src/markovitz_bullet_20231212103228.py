@@ -82,8 +82,7 @@ class MarkovitzSimulator:
 
         return MarkovitzSimulator(**attr)
     
-    @staticmethod
-    def _cov_rescaler(returns : np.ndarray, replace_value : np.ndarray, bias: bool = True) -> tuple[np.ndarray]:
+    def _cov_rescaler(self, returns : np.ndarray, replace_value : np.ndarray, bias: bool = True) -> tuple[np.ndarray]:
         """
         Inside function used to rescale the covariance when used on values containing nan. 
         

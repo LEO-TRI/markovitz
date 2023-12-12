@@ -82,8 +82,7 @@ class MarkovitzSimulator:
 
         return MarkovitzSimulator(**attr)
     
-    @staticmethod
-    def _cov_rescaler(returns : np.ndarray, replace_value : np.ndarray, bias: bool = True) -> tuple[np.ndarray]:
+    def _cov_rescaler(self, returns : np.ndarray, replace_value : np.ndarray, bias: bool = True) -> tuple[np.ndarray]:
         """
         Inside function used to rescale the covariance when used on values containing nan. 
         
@@ -157,7 +156,7 @@ class MarkovitzSimulator:
 
         mean_returns = np.nanmean(self.returns, axis = 0)
                 
-        returns, rescale_factor = self._cov_rescaler(self.returns, mean_returns, bias = True)
+        returns, rescale_factor = self._cov_rescaler(self.returns, mean_returns)
 
         #We should be dividing by the number of actual existing values. So we rescale by the 
         # rescale matrix = n / n_mask to get the "right" cov value and ignoring the nan. If 
@@ -174,6 +173,7 @@ class MarkovitzSimulator:
             simulations = (weights * mean_returns, weights * covariance_matrix ** 0.5)
             updated_params = [("simulations", simulations), ("weights", weights)]
             return self._update_attr(updated_params)
+
 
         dim_weights = (self.returns.shape[1], n_simulations)
         weights = self._generate_rand_weights(dim_weights)
@@ -204,20 +204,7 @@ class MarkovitzSimulator:
 
         return self._update_attr(updated_params)
 
-    def compute_sharpe_ratios(self, risk_free_rate: float = 0)-> "MarkovitzSimulator":
-        """
-        Computes sharpe ratios based on calculated mus and sigmas
-
-        Parameters
-        ----------
-        risk_free_rate : float, optional
-            The risk free rate, by default 0
-
-        Returns
-        -------
-        MarkovitzSimulator
-            An updated simulator
-        """
+    def compute_sharpe_ratios(self, risk_free_rate: float = 0):
 
         mu, sigma = self.simulations
         sharpe_ratio = ((mu - risk_free_rate) 
@@ -227,23 +214,7 @@ class MarkovitzSimulator:
         updated_params = [("sharpe_ratio", sharpe_ratio)]
         return self._update_attr(updated_params)
 
-    def plot(self, title: str = "Markovitz Bullet") -> go.Figure:
-        """
-        Plots a scatter plot of the mus against the sigmas
-        
-        If the instance contains sharpe ratios, each point is coloured
-        with its sharpe ratio
-
-        Parameters
-        ----------
-        title : str, optional
-            The plot's title, by default "Markovitz Bullet"
-
-        Returns
-        -------
-        go.Figure
-            A plotly scatter plot
-        """
+    def plot(self, title: str = "Markovitz Bullet"):
 
         mu = self.simulations[0] * 100
         sigma = self.simulations[1] * 100

@@ -82,8 +82,7 @@ class MarkovitzSimulator:
 
         return MarkovitzSimulator(**attr)
     
-    @staticmethod
-    def _cov_rescaler(returns : np.ndarray, replace_value : np.ndarray, bias: bool = True) -> tuple[np.ndarray]:
+    def _cov_rescaler(self, returns : np.ndarray, replace_value : np.ndarray, bias: bool = True) -> tuple[np.ndarray]:
         """
         Inside function used to rescale the covariance when used on values containing nan. 
         
@@ -227,23 +226,7 @@ class MarkovitzSimulator:
         updated_params = [("sharpe_ratio", sharpe_ratio)]
         return self._update_attr(updated_params)
 
-    def plot(self, title: str = "Markovitz Bullet") -> go.Figure:
-        """
-        Plots a scatter plot of the mus against the sigmas
-        
-        If the instance contains sharpe ratios, each point is coloured
-        with its sharpe ratio
-
-        Parameters
-        ----------
-        title : str, optional
-            The plot's title, by default "Markovitz Bullet"
-
-        Returns
-        -------
-        go.Figure
-            A plotly scatter plot
-        """
+    def plot(self, title: str = "Markovitz Bullet"):
 
         mu = self.simulations[0] * 100
         sigma = self.simulations[1] * 100
