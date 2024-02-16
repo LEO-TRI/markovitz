@@ -1,8 +1,9 @@
 import numpy as np
+from scipy import optimize
+
 import plotly.express as px
 import plotly.graph_objects as go
 from numbers import Number
-from copy import deepcopy
 
 class MarkovitzSimulator:
     """
@@ -112,7 +113,7 @@ class MarkovitzSimulator:
             as a cov matrix. Each cell is the min number of valid data between 2 assets.
         """
         
-        returns_imputed = deepcopy(returns)
+        returns_imputed = returns.copy()
         
         nan_indices = np.isnan(returns_imputed)
         
@@ -173,6 +174,7 @@ class MarkovitzSimulator:
             weights = np.ones(n_simulations)
             simulations = (weights * mean_returns, weights * covariance_matrix ** 0.5)
             updated_params = [("simulations", simulations), ("weights", weights)]
+            
             return self._update_attr(updated_params)
 
         dim_weights = (self.returns.shape[1], n_simulations)
